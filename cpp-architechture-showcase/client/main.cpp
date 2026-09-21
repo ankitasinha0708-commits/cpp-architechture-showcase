@@ -1,39 +1,44 @@
 #include "core/PlmClient.hpp"
+#include "core/AsyncPlmScheduler.hpp"
 #include <iostream>
+#include <chrono>
 
-// Concrete simulation class to mimic real PTC Windchill server responses
 class WindchillSimulationConnector : public PlmEngine::IPlmConnector {
 public:
     std::string fetchPartData(std::string_view partNumber) override {
-        // Simulating a structured JSON payload returned by a Windchill REST API
-        return "{\n"
-            "  \"wtpartNumber\": \"" + std::string(partNumber) + "\",\n"
-            "  \"name\": \"Assembly Component\",\n"
-            "  \"version\": \"A.1\",\n"
-            "  \"lifecycleState\": \"INWORK\"\n"
-            "}";
+        // Simulate a slight server network transmission delay latency
+        std::this_thread::sleep_for(std::chrono::milliseconds(400));
+        return "{\"wtpartNumber\": \"" + std::string(partNumber) + "\", \"status\": \"RELEASED\"}";
     }
 };
 
 int main() {
-    std::cout << "====================================================\n";
-    std::cout << "   PTC Windchill C++ Backend Architecture Showcase   \n";
-    std::cout << "====================================================\n\n";
+    std::cout << "=== Asynchronous PLM Execution Pipeline Initiated ===\n\n";
 
     try {
-        // Instantiate the simulated connector payload
         auto mockConnector = std::make_unique<WindchillSimulationConnector>();
+        auto plmClient = std::make_shared<PlmEngine::PlmClient>(std::move(mockConnector));
 
-        // Inject the dependency safely into the core client orchestrator
-        PlmEngine::PlmClient plmClient(std::move(mockConnector));
+        // Initialize background thread manager layer
+        PlmEngine::AsyncPlmScheduler scheduler(plmClient);
 
-        // Execute processing pipeline
-        std::string partData = plmClient.getPartDetails("0000004512");
+        // Queue requests smoothly without pausing execution paths
+        std::cout << "[Main Thread] Queueing 3 part requests...\n";
+        scheduler.queuePartRequest("999-0001-A");
+        scheduler.queuePartRequest("999-0002-B");
+        scheduler.queuePartRequest("999-0003-C");
 
-        std::cout << "Server Response Payload:\n" << partData << "\n";
+        std::cout << "[Main Thread] Requests queued. Performing independent execution logic...\n";
+        for (int i = 1; i <= 3; ++i) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(300));
+            std::cout << "[Main Thread] Running background calculation task tick: " << i << "\n";
+        }
+
+        std::cout << "\n[Main Thread] Completed calculations. Wrapping up application execution context...\n";
+        std::this_thread::sleep_for(std::chrono::milliseconds(600)); // Buffer to ensure background outputs complete before exit
     }
     catch (const std::exception& ex) {
-        std::cerr << "Execution Pipeline Error: " << ex.what() << "\n";
+        std::cerr << "Critical runtime issue: " << ex.what() << "\n";
         return 1;
     }
 

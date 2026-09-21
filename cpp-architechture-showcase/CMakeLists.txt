@@ -19,4 +19,4 @@ include_directories(include)
 file(GLOB_RECURSE SOURCES "src/*.cpp" "main.cpp")
 
 # Define the final executable
-add_executable(${PROJECT_NAME} ${SOURCES} "src/core/PLMClient.cpp")
+add_executable(${PROJECT_NAME} ${SOURCES} "src/core/PLMClient.cpp" "src/core/AsyncPlmScheduler.cpp")
