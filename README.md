@@ -7,7 +7,7 @@ A production-grade, headless C++20 architectural blueprint showcasing clean-code
 
 ---
 
-## ??? Architectural Core Pillars
+## Architectural Core Pillars
 
 This repository acts as an architectural showcase demonstrating the core software engineering patterns required to lead enterprise-level desktop or backend C++ systems:
 
@@ -18,7 +18,7 @@ This repository acts as an architectural showcase demonstrating the core softwar
 
 ---
 
-## ?? Repository Structural Mapping
+## Repository Structural Mapping
 
 The project follows a standard, highly scannable production layout:
 
@@ -42,7 +42,7 @@ The project follows a standard, highly scannable production layout:
 
 ---
 
-## ?? Design Patterns & C++20 Implementations Showcase
+## Design Patterns & C++20 Implementations Showcase
 
 ### 1. Zero-Copy Semantics & Memory Safety
 The engine heavily utilizes `std::string_view` across all interface parameters to eliminate unnecessary string copy allocations during high-frequency parsing. Smart pointers strictly define compile-time ownership, ensuring zero memory leaks without runtime garbage collection overhead.
@@ -55,7 +55,7 @@ Through structural dependency injection, the unit test engine completely simulat
 
 ---
 
-## ??? Compilation & Build Instructions
+##  Compilation & Build Instructions
 
 This project compiles natively across platforms using **CMake 3.20+** and a compiler supporting **C++20** (e.g., MSVC 2022, GCC 11+, Clang 13+).
 
